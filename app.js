@@ -70,7 +70,9 @@ document.getElementById('solve-btn').addEventListener('click', () => {
     console.log("Results found:", results);
     const end = performance.now();
 
-    displayResults(results, end - start);
+    // Only show words that use all the columns you've filled out
+    const filteredResults = results.filter(w => w.length === columns.length);
+    displayResults(filteredResults, end - start);
 });
 
 function displayResults(words, time) {
