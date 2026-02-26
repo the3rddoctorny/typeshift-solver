@@ -1,3 +1,4 @@
+let trieRoot = {};
 :root {
     --primary: #2c3e50;
     --accent: #27ae60;
