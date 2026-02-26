@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeShift Solver Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <h1>TypeShift Solver</h1>
+        <p>Enter letters for each column. Empty inputs are ignored.</p>
+        
+        <div class="controls">
+            <button id="add-column">＋ Add Column</button>
+            <button id="solve-btn" class="primary-btn">Solve</button>
+            <button id="reset-btn">Reset</button>
+        </div>
+
+        <div id="grid-container" class="grid-container">
+            </div>
+
+        <div class="results-area">
+            <div id="status">Status: Ready</div>
+            <h2>Found Words:</h2>
+            <div id="word-list" class="word-chip-container"></div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
