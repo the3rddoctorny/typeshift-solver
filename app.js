@@ -63,13 +63,11 @@ document.getElementById('solve-btn').addEventListener('click', () => {
         return;
     }
 
+    status.innerText = "Solving...";
+    const start = performance.now();
     console.log("Columns being searched:", columns);
     const results = solve(columns, trieRoot);
     console.log("Results found:", results);
-    
-    status.innerText = "Solving...";
-    const start = performance.now();
-    const results = solve(columns, trieRoot);
     const end = performance.now();
 
     displayResults(results, end - start);
