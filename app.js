@@ -1,56 +1,93 @@
+// --- THE TRIE ENGINE ---
 let trieRoot = {};
-:root {
-    --primary: #2c3e50;
-    --accent: #27ae60;
-    --bg: #ecf0f1;
-    --card: #ffffff;
+
+function buildTrie(words) {
+    const root = {};
+    words.forEach(word => {
+        let node = root;
+        for (const char of word.toLowerCase()) {
+            if (!node[char]) node[char] = {};
+            node = node[char];
+        }
+        node.isWord = true;
+    });
+    return root;
 }
 
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; color: var(--primary); }
+function solve(columns, node, currentWord = "", results = []) {
+    const colIndex = currentWord.length;
+    if (colIndex === columns.length) {
+        if (node.isWord) results.push(currentWord.toUpperCase());
+        return results;
+    }
 
-.app-container { max-width: 900px; width: 95%; padding: 20px; text-align: center; }
-
-.grid-container {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    padding: 20px 10px;
-    margin-bottom: 20px;
-    scroll-behavior: smooth;
-    border-bottom: 2px solid #bdc3c7;
+    for (const letter of columns[colIndex]) {
+        const l = letter.toLowerCase();
+        if (node[l]) {
+            solve(columns, node[l], currentWord + letter, results);
+        }
+    }
+    return [...new Set(results)];
 }
 
-.column {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 60px;
-    background: var(--card);
-    padding: 10px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+// --- UI LOGIC ---
+const grid = document.getElementById('grid-container');
+const wordListDisplay = document.getElementById('word-list');
+const status = document.getElementById('status');
+
+function createColumn() {
+    const col = document.createElement('div');
+    col.className = 'column';
+    for (let i = 0; i < 7; i++) { // Supporting up to 7 rows per column
+        const input = document.createElement('input');
+        input.maxLength = 1;
+        col.appendChild(input);
+    }
+    grid.appendChild(col);
 }
 
-.column input {
-    width: 50px;
-    height: 50px;
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    border: 2px solid #dfe6e9;
-    border-radius: 8px;
+// Initial Grid Setup (5 columns)
+for (let i = 0; i < 5; i++) createColumn();
+
+document.getElementById('add-column').addEventListener('click', createColumn);
+
+document.getElementById('solve-btn').addEventListener('click', () => {
+    const columns = Array.from(document.querySelectorAll('.column')).map(col => {
+        return Array.from(col.querySelectorAll('input'))
+            .map(i => i.value.trim())
+            .filter(v => v !== "");
+    }).filter(colArr => colArr.length > 0);
+
+    if (columns.length < 2) {
+        alert("Enter letters in at least 2 columns!");
+        return;
+    }
+
+    status.innerText = "Solving...";
+    const start = performance.now();
+    const results = solve(columns, trieRoot);
+    const end = performance.now();
+
+    displayResults(results, end - start);
+});
+
+function displayResults(words, time) {
+    wordListDisplay.innerHTML = "";
+    status.innerText = `Found ${words.length} words in ${time.toFixed(2)}ms`;
+    words.sort().forEach(word => {
+        const chip = document.createElement('span');
+        chip.className = 'word-chip';
+        chip.innerText = word;
+        wordListDisplay.appendChild(chip);
+    });
 }
 
-.column input:focus { border-color: var(--accent); outline: none; background: #f9f9f9; }
+document.getElementById('reset-btn').addEventListener('click', () => {
+    document.querySelectorAll('input').forEach(i => i.value = "");
+    wordListDisplay.innerHTML = "";
+    status.innerText = "Status: Cleared";
+});
 
-.primary-btn { background: var(--accent) !important; font-weight: bold; }
-
-button { padding: 12px 18px; cursor: pointer; background: #95a5a6; color: white; border: none; border-radius: 8px; margin: 5px; transition: 0.2s; }
-button:hover { opacity: 0.8; }
-
-.word-chip-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 15px; }
-
-.word-chip { background: var(--primary); color: white; padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; letter-spacing: 1px; }
-
-#status { font-size: 0.8rem; color: #7f8c8d; margin-bottom: 10px; }
+// Demo dictionary - In a real app, fetch your full word list here
+const demoWords = ["shift", "types", "words", "grids", "solve", "smart", "logic", "apple"];
+trieRoot = buildTrie(demoWords);
