@@ -90,6 +90,26 @@ document.getElementById('reset-btn').addEventListener('click', () => {
     status.innerText = "Status: Cleared";
 });
 
-// Demo dictionary - In a real app, fetch your full word list here
-const demoWords = ["shift", "types", "words", "grids", "solve", "smart", "logic", "apple"];
-trieRoot = buildTrie(demoWords);
+// --- LOAD REAL DICTIONARY ---
+async function init() {
+    status.innerText = "Loading Dictionary...";
+    try {
+        // Fetching a standard English word list from a public JSON source
+        const response = await fetch('https://raw.githubusercontent.com/dwyl/english-words/master/words_dictionary.json');
+        const data = await response.json();
+        
+        // The data is an object like {"word": 1}, so we take the keys
+        const allWords = Object.keys(data);
+        
+        // Build the Trie (The "Brain")
+        trieRoot = buildTrie(allWords);
+        
+        status.innerText = "Dictionary Loaded! Ready to Solve.";
+    } catch (err) {
+        console.error("Failed to load dictionary:", err);
+        status.innerText = "Error loading dictionary.";
+    }
+}
+
+// Start the app
+init();
