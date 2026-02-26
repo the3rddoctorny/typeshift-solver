@@ -38,7 +38,7 @@ const status = document.getElementById('status');
 function createColumn() {
     const col = document.createElement('div');
     col.className = 'column';
-    for (let i = 0; i < 7; i++) { // Supporting up to 7 rows per column
+    for (let i = 0; i < 9; i++) { // Supporting up to 7 rows per column
         const input = document.createElement('input');
         input.maxLength = 1;
         col.appendChild(input);
