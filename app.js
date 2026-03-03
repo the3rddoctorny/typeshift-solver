@@ -38,14 +38,37 @@ const status = document.getElementById('status');
 function createColumn() {
     const col = document.createElement('div');
     col.className = 'column';
-    for (let i = 0; i < 9; i++) { // Supporting up to 7 rows per column
+    
+    for (let i = 0; i < 9; i++) {
         const input = document.createElement('input');
         input.maxLength = 1;
+        input.type = "text";
+        input.setAttribute('autocomplete', 'off'); // Stops mobile suggestions from blocking the view
+
+        // AUTO-ADVANCE LOGIC
+        input.addEventListener('input', (e) => {
+            if (e.target.value.length === 1) {
+                const next = e.target.nextElementSibling;
+                if (next && next.tagName === 'INPUT') {
+                    next.focus();
+                }
+            }
+        });
+
+        // BACKSPACE LOGIC
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && e.target.value.length === 0) {
+                const prev = e.target.previousElementSibling;
+                if (prev && prev.tagName === 'INPUT') {
+                    prev.focus();
+                }
+            }
+        });
+
         col.appendChild(input);
     }
     grid.appendChild(col);
 }
-
 // Initial Grid Setup (5 columns)
 for (let i = 0; i < 5; i++) createColumn();
 
