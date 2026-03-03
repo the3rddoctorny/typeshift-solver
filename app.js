@@ -137,6 +137,20 @@ document.getElementById('reset-btn').addEventListener('click', () => {
     status.innerText = "Status: Cleared";
 });
 
+document.getElementById('reset-btn').addEventListener('click', () => {
+    // This clears every input without refreshing the dictionary
+    document.querySelectorAll('.column input').forEach(input => {
+        input.value = '';
+    });
+    // Reset the results list too
+    document.getElementById('word-list').innerHTML = '';
+    document.getElementById('status').innerText = "Status: Cleared";
+    
+    // Put the cursor back in the first box
+    const firstInput = document.querySelector('.column input');
+    if (firstInput) firstInput.focus();
+});
+
 // --- LOAD REAL DICTIONARY ---
 async function init() {
     status.innerText = "Loading Dictionary...";
