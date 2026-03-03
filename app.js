@@ -42,26 +42,46 @@ function createColumn() {
     for (let i = 0; i < 9; i++) {
         const input = document.createElement('input');
         input.maxLength = 1;
-        input.type = "text";
-        input.setAttribute('autocomplete', 'off'); // Stops mobile suggestions from blocking the view
+        input.setAttribute('autocomplete', 'off');
         input.setAttribute('autocapitalize', 'characters');
-        
-        // AUTO-ADVANCE LOGIC
+
+        // VERTICAL THEN HORIZONTAL ADVANCE
         input.addEventListener('input', (e) => {
             if (e.target.value.length === 1) {
-                const next = e.target.nextElementSibling;
-                if (next && next.tagName === 'INPUT') {
-                    next.focus();
+                const nextInCol = e.target.nextElementSibling;
+                
+                if (nextInCol && nextInCol.tagName === 'INPUT') {
+                    // Move down the current column
+                    nextInCol.focus();
+                } else {
+                    // We are at the bottom! Move to the top of the NEXT column
+                    const currentColumn = e.target.parentElement;
+                    const nextColumn = currentColumn.nextElementSibling;
+                    if (nextColumn && nextColumn.classList.contains('column')) {
+                        const firstInput = nextColumn.querySelector('input');
+                        if (firstInput) firstInput.focus();
+                    }
                 }
             }
         });
 
-        // BACKSPACE LOGIC
+        // BACKSPACE NAVIGATION
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Backspace' && e.target.value.length === 0) {
-                const prev = e.target.previousElementSibling;
-                if (prev && prev.tagName === 'INPUT') {
-                    prev.focus();
+                const prevInCol = e.target.previousElementSibling;
+                
+                if (prevInCol && prevInCol.tagName === 'INPUT') {
+                    // Move up the current column
+                    prevInCol.focus();
+                } else {
+                    // Move to the bottom of the PREVIOUS column
+                    const currentColumn = e.target.parentElement;
+                    const prevColumn = currentColumn.previousElementSibling;
+                    if (prevColumn && prevColumn.classList.contains('column')) {
+                        const inputs = prevColumn.querySelectorAll('input');
+                        const lastInput = inputs[inputs.length - 1];
+                        if (lastInput) lastInput.focus();
+                    }
                 }
             }
         });
@@ -70,6 +90,7 @@ function createColumn() {
     }
     grid.appendChild(col);
 }
+
 // Initial Grid Setup (5 columns)
 for (let i = 0; i < 5; i++) createColumn();
 
