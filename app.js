@@ -44,7 +44,8 @@ function createColumn() {
         input.maxLength = 1;
         input.type = "text";
         input.setAttribute('autocomplete', 'off'); // Stops mobile suggestions from blocking the view
-
+        input.setAttribute('autocapitalize', 'characters');
+        
         // AUTO-ADVANCE LOGIC
         input.addEventListener('input', (e) => {
             if (e.target.value.length === 1) {
