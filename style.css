@@ -42,6 +42,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
     border-radius: 8px;
 }
 
+.column input:focus {
+    background-color: #fff9c4; /* Light yellow highlight */
+    border-color: #fbc02d;
+    transform: scale(1.05);
+    transition: transform 0.1s ease;
+    z-index: 10;
+}
+
 .column input:focus { border-color: var(--accent); outline: none; background: #f9f9f9; }
 
 .primary-btn { background: var(--accent) !important; font-weight: bold; }
